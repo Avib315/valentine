@@ -19,7 +19,6 @@
       text-align: center;
       max-width: 600px;
       width: 90%;
-      animation: fadeIn 0.5s ease;
   
       h2 {
         color: #333;
@@ -30,6 +29,7 @@
   
     .buttons-container {
       display: flex;
+      margin-top: 4rem;
       gap: 2rem;
       justify-content: center;
       width: 100%;
@@ -47,11 +47,34 @@
         &.yes-button {
           background-color: #ff6b6b;
           color: white;
-          animation: pulse 2s infinite;
-  
+          &.size1{
+            flex: 2;
+            transform: scale(1.1)
+          }
+          &.size2{
+            flex: 3;
+            transform: scale(1.2)
+          }
+          &.size3{
+            flex: 5;
+            transform: scale(1.4)
+          }
+          &.size4{
+            flex: 10;
+            transform: scale(1.5)
+          }
+          &.size5{
+            flex: 15;
+            transform: scale(1.6)
+          }
+          &.size5{
+            flex: 15;
+            transform: scale(2)
+            translateX(-40px)
+            translateY(10px)
+          }
           &:hover {
             background-color: #ff5252;
-            transform: scale(1.1);
           }
         }
   
@@ -60,25 +83,12 @@
           color: white;
           transition: all 0.3s ease;
           
-          &:hover {
-            opacity: 0.8;
-            transform: translateY(-2px);
-          }
+   
         }
       }
     }
   }
-  
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+ 
   
   @keyframes pulse {
     0% {
