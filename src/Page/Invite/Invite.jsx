@@ -38,15 +38,7 @@ export default function Invite() {
     if (qNum < questionArray.length) {
       setQNum(prev => prev + 1)
     }
-    
-    // Random position within viewport bounds
-    const maxWidth = window.innerWidth - 100 // button width
-    const maxHeight = window.innerHeight - 50 // button height
-    
-    const newLeft = Math.random() * maxWidth
-    const newTop = Math.random() * maxHeight
-    
-    setNoButtonPosition({ top: newTop, left: newLeft })
+
   }
 
   return (
@@ -67,11 +59,7 @@ export default function Invite() {
         <button 
           onClick={moveNoButton} 
           className="no-button"
-          style={{ 
-            position: 'absolute',
-            top: `${noButtonPosition.top}px`,
-            left: `${noButtonPosition.left}px`
-          }}
+  
         >
           לא
         </button>
