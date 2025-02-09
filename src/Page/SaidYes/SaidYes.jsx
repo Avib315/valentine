@@ -25,17 +25,25 @@ export default function SaidYes() {
     `אני רוצה ${word.ready} בשעה: ${time}`,
   ]
 
+  const startVideo = async () => {
+    try {
+      if (videoRef.current) {
+        await videoRef.current.play();
+        videoRef.current.volume = volume;
+        setIsPlaying(true);
+      }
+    } catch (error) {
+      console.log("Video autoplay was prevented:", error);
+    }
+  };
+
   useEffect(() => {
     if (videoRef.current) {
-      // Add event listeners for video loading
-      const handleVideoLoaded = () => {
+      const handleVideoLoaded = async () => {
         setIsVideoLoaded(true);
-        videoRef.current.play().catch(error => {
-          console.log("Video playback was prevented:", error);
-        });
-        videoRef.current.volume = volume;
+        await startVideo();
 
-        // Start showing messages only after video is loaded
+        // Start showing messages only after video is loaded and playing
         messageArray.forEach((_, index) => {
           setTimeout(() => {
             setVisibleMessages(prev => [...prev, index]);
@@ -43,13 +51,29 @@ export default function SaidYes() {
         });
       };
 
+      const handleVideoEnded = () => {
+        if (videoRef.current) {
+          videoRef.current.play(); // Ensure it keeps playing even if loop fails
+        }
+      };
+
       videoRef.current.addEventListener('loadeddata', handleVideoLoaded);
+      videoRef.current.addEventListener('ended', handleVideoEnded);
+
+      // Force video load if it's taking too long
+      const timeoutId = setTimeout(() => {
+        if (!isVideoLoaded && videoRef.current) {
+          handleVideoLoaded();
+        }
+      }, 5000); // 5 second timeout
 
       // Cleanup
       return () => {
         if (videoRef.current) {
           videoRef.current.removeEventListener('loadeddata', handleVideoLoaded);
+          videoRef.current.removeEventListener('ended', handleVideoEnded);
         }
+        clearTimeout(timeoutId);
       };
     }
   }, []);
@@ -62,12 +86,12 @@ export default function SaidYes() {
     }
   };
 
-  const togglePlay = () => {
+  const togglePlay = async () => {
     if (videoRef.current) {
       if (isPlaying) {
         videoRef.current.pause();
       } else {
-        videoRef.current.play();
+        await startVideo();
       }
       setIsPlaying(!isPlaying);
     }
@@ -88,6 +112,8 @@ export default function SaidYes() {
         playsInline
         autoPlay
         loop
+        muted={false}
+        preload="auto"
       >
         <source src={video} type="video/mp4" />
         Your browser does not support the video tag.
