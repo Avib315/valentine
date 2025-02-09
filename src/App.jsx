@@ -1,8 +1,8 @@
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import CreateInvite from './Page/CreateInvite/CreateInvite'
-import SaidYes from './Page/SaidYes/saidYes'
 import Invite from './Page/Invite/Invite'
+import SaidYes from './Page/SaidYes/SaidYes'
 
 function App() {
   return (
