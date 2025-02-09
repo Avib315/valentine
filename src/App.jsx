@@ -10,9 +10,9 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<CreateInvite />} />
-        <Route path="/InvitationLink" element={<InvitationLink />} />
+        <Route path="/InvitationLink/*" element={<InvitationLink />} />
+        <Route path="/invite/*" element={<Invite />} />
         <Route path="/saidYes" element={<SaidYes />} />
-        <Route path="/invite" element={<Invite />} />
       </Routes>
     </BrowserRouter>
   )

@@ -1,16 +1,19 @@
 import React, { useState } from 'react'
 import "./style.scss"
+import { useNavigate } from 'react-router-dom'
 
 export default function CreateInvite() {
     const [name, setName] = useState('')
     const [time, setTime] = useState('')
     const [gender, setGender] = useState('female')
-    const baseUrl = `https://valentine-invitation-foru.netlify.app/invite/?name=${name}&time=${time}&gender=${gender}`
+    const navigate = useNavigate()
     const handleCreateInvite = () => {
+        const goTo = `InvitationLink/?name=${name}&time=${time}&gender=${gender}`
         if (!name || !time) {
             alert('נא מלא את שדה השם והשעה')
             return
         }
+        navigate(goTo)
     }
 
     return (
