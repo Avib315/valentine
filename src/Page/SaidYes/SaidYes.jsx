@@ -8,6 +8,7 @@ export default function SaidYes() {
   const [isPlaying, setIsPlaying] = useState(true);
   const [volume, setVolume] = useState(0.5);
   const [visibleMessages, setVisibleMessages] = useState([]);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   
   const { gender, name, time } = getDetailsFromUrlParams()
   const isMale = gender === "male" 
@@ -25,20 +26,32 @@ export default function SaidYes() {
   ]
 
   useEffect(() => {
-    // Start playing video
     if (videoRef.current) {
-      videoRef.current.play().catch(error => {
-        console.log("Video playback was prevented:", error);
-      });
-      videoRef.current.volume = volume;
-    }
+      // Add event listeners for video loading
+      const handleVideoLoaded = () => {
+        setIsVideoLoaded(true);
+        videoRef.current.play().catch(error => {
+          console.log("Video playback was prevented:", error);
+        });
+        videoRef.current.volume = volume;
 
-    // Show messages with delay
-    messageArray.forEach((_, index) => {
-      setTimeout(() => {
-        setVisibleMessages(prev => [...prev, index]);
-      }, 800 * (index + 1)); // 800ms delay between each message
-    });
+        // Start showing messages only after video is loaded
+        messageArray.forEach((_, index) => {
+          setTimeout(() => {
+            setVisibleMessages(prev => [...prev, index]);
+          }, 800 * (index + 1));
+        });
+      };
+
+      videoRef.current.addEventListener('loadeddata', handleVideoLoaded);
+
+      // Cleanup
+      return () => {
+        if (videoRef.current) {
+          videoRef.current.removeEventListener('loadeddata', handleVideoLoaded);
+        }
+      };
+    }
   }, []);
 
   const handleVolumeChange = (e) => {
@@ -62,6 +75,13 @@ export default function SaidYes() {
 
   return (
     <div className="said-yes-container">
+      {!isVideoLoaded && (
+        <div className="loading-overlay">
+          <div className="loading-spinner"></div>
+          <div className="loading-text">טוען...</div>
+        </div>
+      )}
+
       <video
         ref={videoRef}
         className="celebration-video"
@@ -73,35 +93,39 @@ export default function SaidYes() {
         Your browser does not support the video tag.
       </video>
 
-      <div className="messages-container">
-        {messageArray.map((message, index) => (
-          <div
-            key={index}
-            className={`message ${visibleMessages.includes(index) ? 'visible' : ''}`}
-          >
-            {message}
+      {isVideoLoaded && (
+        <>
+          <div className="messages-container">
+            {messageArray.map((message, index) => (
+              <div
+                key={index}
+                className={`message ${visibleMessages.includes(index) ? 'visible' : ''}`}
+              >
+                {message}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
 
-      <div className="video-controls">
-        <button onClick={togglePlay} className="play-pause-btn">
-          {isPlaying ? '⏸️' : '▶️'}
-        </button>
-        
-        <div className="volume-control">
-          <span className="volume-icon">🔊</span>
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.1"
-            value={volume}
-            onChange={handleVolumeChange}
-            className="volume-slider"
-          />
-        </div>
-      </div>
+          <div className="video-controls">
+            <button onClick={togglePlay} className="play-pause-btn">
+              {isPlaying ? '⏸️' : '▶️'}
+            </button>
+            
+            <div className="volume-control">
+              <span className="volume-icon">🔊</span>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.1"
+                value={volume}
+                onChange={handleVolumeChange}
+                className="volume-slider"
+              />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
