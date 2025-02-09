@@ -4,11 +4,11 @@ import "./style.scss"
 export default function CreateInvite() {
     const [name, setName] = useState('')
     const [time, setTime] = useState('')
-    const [gender, setGender] = useState('female') // Default to male
-
+    const [gender, setGender] = useState('female')
+    const baseUrl = `https://valentine-invitation-foru.netlify.app/invite/?name=${name}&time=${time}&gender=${gender}`
     const handleCreateInvite = () => {
         if (!name || !time) {
-            alert('Please fill in both name and time')
+            alert('נא מלא את שדה השם והשעה')
             return
         }
     }
