@@ -6,7 +6,7 @@ import './style.scss'
 export default function Invite() {
   const [qNum, setQNum] = useState(1)
   const [yesButtonSize, setYesButtonSize] = useState(1)
-  const [noButtonPosition, setNoButtonPosition] = useState({ top: 0, left: 0 })
+  const [yesBtnText, setYesBtnText] = useState("כן")
   const { gender, name, time } = getDetailsFromUrlParams()
   
   const questionArray = [
@@ -29,9 +29,10 @@ export default function Invite() {
   const handleYesClicked = () => {
     const goTo = `../saidYes/?name=${encodeURIComponent(name)}&time=${encodeURIComponent(time)}&gender=${encodeURIComponent(gender)}`
     setYesButtonSize(prev => prev * 1.2) // Make yes button bigger
+    setYesBtnText("ידעתי שאשכנע אותך")
     setTimeout(() => {
       navigate(goTo)
-    }, 500)
+    }, 2000)
   }
 
   const moveNoButton = () => {
@@ -53,7 +54,7 @@ export default function Invite() {
           className="yes-button"
           style={{ transform: `scale(${yesButtonSize})` }}
         >
-          כן 💝
+          {yesBtnText} 💝
         </button>
 
         <button 
